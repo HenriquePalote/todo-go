@@ -22,11 +22,23 @@ func main() {
 	server.POST("/todo", func(context *gin.Context) {
 		var todo Todo
 		context.BindJSON(&todo)
-		todo.Id = 1 // TODO: implement nextId
+
+		todo.Id = getNextId(todoList)
 		todoList = append(todoList, todo)
 
-		context.Status(201)
+		context.JSON(201, todo.Id)
 	})
 
 	server.Run()
+}
+
+func getNextId(list []Todo) int {
+	arrayLen := len(todoList)
+
+	if arrayLen > 0 {
+		nextId := list[arrayLen-1].Id + 1
+		return nextId
+	}
+
+	return 1
 }
